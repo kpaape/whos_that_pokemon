@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<link rel="stylesheet" type="text/css" href="pokemon_style.css">
+		<script src= "https://code.jquery.com/jquery-3.2.1.js"></script>
+		<!-- <script src= 'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script> -->
+		<script src="pokemon_script.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<header>
+				<h1 id="thatPokemon">Who's that Pokemon?</h1>
+			</header>
+			<main>
+				<div id="imageHolder">
+					<canvas id="processCanvas"></canvas>
+					<img id="pokemonImg" src="">
+				</div>
+				<h1 id="pokemonName"></h1>
+				<h1 id="hiddenName">__________________</h1>
+				<h2 id="guessTimer">Time: </h2>
+				<h2>
+					Win: <span id="winCount">0</span>
+					Loss: <span id="lossCount">0</span>
+				</h2>
+				<input id="guessName">
+				<a id="startGame" class="button">Start Game</a>
+				<a id="playAgain" class="button">Play Again</a>
+			</main>
+			<footer>
+				<p>
+					Thank you to Paul Hallet and PokéAPI contributors - this project is not possible without such a great resource.
+				</p>
+				<br>
+				<p>
+					Pokémon and Pokémon character names are trademarks of Nintendo.
+				</p>
+			</footer>
+		</div>	<!-- End of wrapper -->
+	</body>
+</html>
