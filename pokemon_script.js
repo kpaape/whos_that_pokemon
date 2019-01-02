@@ -121,11 +121,11 @@ function checkNames() {
     var errorMargin = Math.ceil(actualName.length * 0.1)
     // console.log("ERROR TOTAL: " + errorTotal);
     // console.log("ERROR MARGIN: " + errorMargin);
-    if(errorTotal >= errorMargin) {
-        console.log("SHOULD LOSE");
-    } else {
-        console.log("SHOULD WIN");
+    if(errorTotal <= errorMargin) {
+        // console.log("SHOULD WIN");
         isWin = true;
+    // } else {
+    //     console.log("SHOULD LOSE");
     }
 
     // TLDR
