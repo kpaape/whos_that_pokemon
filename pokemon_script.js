@@ -1,3 +1,5 @@
+// add generation selection
+
 var pokemonId = 1;
 var cnv = "";
 var ctx = "";
@@ -62,7 +64,6 @@ function makeSilhouette(img) {
 }
 
 function countDown(time) {
-    console.log(time);
     $("#guessTimer").text("Time: " + time);
     time -= 1;
     if(time < 5) {
@@ -81,13 +82,62 @@ function submitName() {
     $("#pokemonImg").show();
     $("#pokemonName").show();
     $("#playAgain").show();
-    if($("#pokemonName").text().toUpperCase() == $("#guessName").val().toUpperCase()) {
+
+    if(checkNames()) {
         var wins = Number($("#winCount").text()) + 1;
         $("#winCount").text(wins);
     } else {
         var losses = Number($("#lossCount").text()) + 1;
         $("#lossCount").text(losses);
     }
+}
+
+function checkNames() {
+    actualName = $("#pokemonName").text().toUpperCase();
+    guessedName = $("#guessName").val().toUpperCase();
+    // get rid of any characters that could cause errors due to the api (example: "Mr. Mime" is stored as "mr-mime")
+    actualName = actualName.replace(/ /g, "").replace(/-/g, "").replace(/\./g, "");
+    guessedName = guessedName.replace(/ /g, "").replace(/-/g, "").replace(/\./g, "");
+    var guessedLen = guessedName.length;
+    var isWin = false;
+    
+    var nameCheck = actualName;
+    var guessedCheck = guessedName;
+    var j = 0;
+    for(var i = 0; i < guessedLen; i++) {
+        var prevCheck = nameCheck;
+        // console.log("CHECK FOR: " + guessedCheck[j]);
+        nameCheck = nameCheck.replace(guessedCheck[j], "");
+        if(prevCheck != nameCheck) {
+            guessedCheck = guessedCheck.replace(guessedCheck[j], "");
+        } else {
+            j++;
+        }
+        // console.log("ACTUAL: " + nameCheck);
+        // console.log("GUESS: " + guessedCheck);
+    }
+
+    var errorTotal = (nameCheck.length + guessedCheck.length) / 2;
+    var errorMargin = Math.ceil(actualName.length * 0.1)
+    // console.log("ERROR TOTAL: " + errorTotal);
+    // console.log("ERROR MARGIN: " + errorMargin);
+    if(errorTotal >= errorMargin) {
+        console.log("SHOULD LOSE");
+    } else {
+        console.log("SHOULD WIN");
+        isWin = true;
+    }
+
+    // TLDR
+    // iterate through the guessed name
+        // remove the guessed letter inside the actual name if it is found
+        // if the replace() changes the string, replace the guessed letter from the guessed string
+
+        // last, average the lengths of the processed version of the actual name and processed version of the guessed name (if the guess was perfect, this should be 0)
+        // *this average length is used as the name accuracy score - like golf, the lower the better
+        // if the error total is less than or equal to the error margin, the user gets it correct
+
+    return isWin;
 }
 
 function playAgain() {
