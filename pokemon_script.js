@@ -1,4 +1,4 @@
-// add generation selection
+
 
 var pokemonId = 1;
 var cnv = "";
@@ -21,19 +21,21 @@ $("body").ready(function() {
 });
 
 
-function showPokemon(usrInput) {
-    pokemonId = Math.floor(Math.random() * 802 + 1);
-    if(usrInput) {
-        pokemonId = usrInput;
+function showPokemon(providedId) {
+    let [min, max] = $("#gen_select").val().split(",");
+    [min, max] = [Number(min), Number(max)];
+    pokemonId = Math.floor(Math.random() * (max + 1 - min)) + min;
+    if(providedId) {
+        pokemonId = providedId;
     }
     $.get(`https://pokeapi.co/api/v2/pokemon/${pokemonId}/`, function(response) {
-        var pokemonName = "";
+        let pokemonName = "";
         pokemonName = response.species.name;
-        var pokemonName = pokemonName[0].toUpperCase() + pokemonName.substr(1);
+        pokemonName = pokemonName[0].toUpperCase() + pokemonName.substr(1);
         $("#pokemonName").text(pokemonName);
-        var pokemonImg = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + pokemonId + ".png";
+        let pokemonImg = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + pokemonId + ".png";
         $("img#pokemonImg").attr("src", pokemonImg);
-        var img = new Image();
+        let img = new Image();
         img.setAttribute('crossOrigin', 'anonymous');
         img.src = pokemonImg;
         img.onload = function() {
@@ -45,9 +47,9 @@ function showPokemon(usrInput) {
 function makeSilhouette(img) {
     ctx.clearRect(0, 0, cnv.width, cnv.height);
     ctx.drawImage(img, 0, 0, cnv.width, cnv.height);    // draw the image to the canvas to grab the image data
-    var imgData = ctx.getImageData(0, 0, cnv.width, cnv.height);
-    var data = imgData.data;
-    var imgDataLen = data.length;   // Better to set the length to a variable and not get the length everytime the loop is itterated
+    let imgData = ctx.getImageData(0, 0, cnv.width, cnv.height);
+    let data = imgData.data;
+    let imgDataLen = data.length;   // Better to set the length to a variable and not get the length everytime the loop is itterated
     for(i = 0; i < imgDataLen; i+=4){   // cycle through all pixel data and make opaque pixels black
         if((data[i] + data[i+1] + data[i+2]) / 3 <= 255) {
             data[i] = 0;
@@ -84,10 +86,10 @@ function submitName() {
     $("#playAgain").show();
 
     if(checkNames()) {
-        var wins = Number($("#winCount").text()) + 1;
+        let wins = Number($("#winCount").text()) + 1;
         $("#winCount").text(wins);
     } else {
-        var losses = Number($("#lossCount").text()) + 1;
+        let losses = Number($("#lossCount").text()) + 1;
         $("#lossCount").text(losses);
     }
 }
@@ -96,16 +98,16 @@ function checkNames() {
     actualName = $("#pokemonName").text().toUpperCase();
     guessedName = $("#guessName").val().toUpperCase();
     // get rid of any characters that could cause errors due to the api (example: "Mr. Mime" is stored as "mr-mime")
-    actualName = actualName.replace(/ /g, "").replace(/-/g, "").replace(/\./g, "");
-    guessedName = guessedName.replace(/ /g, "").replace(/-/g, "").replace(/\./g, "");
-    var guessedLen = guessedName.length;
-    var isWin = false;
+    actualName = actualName.replace(/[\s-\.]/g, "");
+    guessedName = guessedName.replace(/[\s-\.]/g, "");
+    let guessedLen = guessedName.length;
+    let isWin = false;
     
-    var nameCheck = actualName;
-    var guessedCheck = guessedName;
-    var j = 0;
-    for(var i = 0; i < guessedLen; i++) {
-        var prevCheck = nameCheck;
+    let nameCheck = actualName;
+    let guessedCheck = guessedName;
+    let j = 0;
+    for(let i = 0; i < guessedLen; i++) {
+        let prevCheck = nameCheck;
         // console.log("CHECK FOR: " + guessedCheck[j]);
         nameCheck = nameCheck.replace(guessedCheck[j], "");
         if(prevCheck != nameCheck) {
@@ -117,8 +119,8 @@ function checkNames() {
         // console.log("GUESS: " + guessedCheck);
     }
 
-    var errorTotal = (nameCheck.length + guessedCheck.length) / 2;
-    var errorMargin = Math.ceil(actualName.length * 0.1)
+    let errorTotal = (nameCheck.length + guessedCheck.length) / 2;
+    let errorMargin = Math.ceil(actualName.length * 0.1)
     // console.log("ERROR TOTAL: " + errorTotal);
     // console.log("ERROR MARGIN: " + errorMargin);
     if(errorTotal <= errorMargin) {
@@ -140,11 +142,13 @@ function checkNames() {
     return isWin;
 }
 
-function playAgain() {
+function playAgain(providedId) {
     $("#pokemonImg").hide();
     $("#pokemonName").hide();
     $("#playAgain").hide();
     $("#processCanvas").show();
     $("#hiddenName").show();
-    showPokemon();
+    $("#guessName").val("");
+    $("#guessName").focus();
+    showPokemon(providedId);
 }
