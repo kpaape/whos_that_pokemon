@@ -103,3 +103,12 @@ h1#thatPokemon {
     text-align: center;
     padding: 50px 10px;
 }
+
+#gen_wrapper {
+    padding: 10px;
+}
+
+#gen_select {
+    padding: 4px;
+    font-size: 14px;
+}
